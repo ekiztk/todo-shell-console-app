@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Konsol üzerinden kontrol edilebilen, dosya veritabanına sahip ve CRUD işlemleri yapılabilen TO-DO uygulamasıdır.
-# Çalıştırıldığı dizinde todos isimli bir klasör oluşturur ve yapılacakları yapılacak_isim.txt dosyası formatında kayıt eder.
-# Her txt dosyası içinde sadece son tarih bilgisi bulunur.
+# This is a TO-DO application that can be controlled via the console, has a file database, and performs CRUD operations.
+# It creates a folder named todos in the current directory and saves the to-dos in the format of todo_name.txt.
+# Each txt file contains only the deadline information.
 
 GREEN_COLOR='\033[0;32m'
 RED_COLOR='\033[0;31m'
@@ -26,12 +26,12 @@ if [ ! -d "$FILE_DIR" ]; then
 fi
 
 cd "$FILE_DIR"
-echo -e "${BLUE_COLOR}Yapılacaklar uygulamasına hoşgeldiniz!${WHITE_COLOR}"
+echo -e "${BLUE_COLOR}Welcome to the To-Do application!${WHITE_COLOR}"
 
 while [ 0 ]
 do
-    echo "Lütfen yapmak istediğiniz işlem numarası giriniz!"
-    echo "1) Yapılacakları listele. 2) Yeni yapılacak ekle. 3) Yapılacak güncelle. 4) Yapılacak sil."
+    echo "Please enter the number of the operation you want to perform!"
+    echo "1) List To-Dos. 2) Add New To-Do. 3) Update To-Do. 4) Delete To-Do."
 
     read -r PROCESS_NUMBER
 
@@ -39,13 +39,13 @@ do
         1) 
             clear
             echo "---------------------"
-            echo -e "${BLUE_COLOR}Yapılacak | Son Tarih${WHITE_COLOR}"
+            echo -e "${BLUE_COLOR}To-Do | Deadline${WHITE_COLOR}"
             echo "---------------------"
 
             ([ `printf *.txt` != '*.txt' ] || [ -f '*.txt' ])
 
             if [ $? != 0 ]; then
-              echo -e "${RED_COLOR}Hiç yapılacak yok!${WHITE_COLOR}"
+              echo -e "${RED_COLOR}No to-dos yet!${WHITE_COLOR}"
               echo "---------------------"
               continue
             fi
@@ -57,38 +57,38 @@ do
             done
 
             echo "---------------------"
-            echo -e "${GREEN_COLOR}Toplam $(($i-1)) adet yapılacak var.${WHITE_COLOR}"
+            echo -e "${GREEN_COLOR}Total of $(($i-1)) to-dos.${WHITE_COLOR}"
             echo "---------------------"
             ;;
         2) 
             clear
-            echo "Yapılacak ismi girin."
+            echo "Enter the name of the to-do."
             read -r TODO_NAME
 
             TODO_FILE_NAME=${TODO_NAME,,}".txt"
 
             if [ -e "$TODO_FILE_NAME" ]; then
-                echo -e "${RED_COLOR}HATA: Bu yapılacak zaten tanımlı, güncellemeyi deneyin.${WHITE_COLOR}"
+                echo -e "${RED_COLOR}ERROR: This to-do already exists, try updating it.${WHITE_COLOR}"
                 continue
             else
                 touch "$TODO_FILE_NAME"
             fi
 
-            echo "Yapılacak için son tarihi girin. (Ay/Gün/Yıl)"
+            echo "Enter the deadline for the to-do. (Month/Day/Year)"
             read -r INPUT_DEADLINE_DATE
             
             CheckIfDateIsValid "$INPUT_DEADLINE_DATE"
             if [ $? != 0 ]; then
-              echo -e "${RED_COLOR}HATA: Geçersiz tarih: [${INPUT_DEADLINE_DATE}]; tekrar deneyin.${WHITE_COLOR}"
+              echo -e "${RED_COLOR}ERROR: Invalid date: [${INPUT_DEADLINE_DATE}]; try again.${WHITE_COLOR}"
             else
               echo "$INPUT_DEADLINE_DATE" > "$TODO_FILE_NAME"
             fi
 
-            echo -e "${GREEN_COLOR}Yapılacak başarıyla oluşturuldu!${WHITE_COLOR}"
+            echo -e "${GREEN_COLOR}To-Do created successfully!${WHITE_COLOR}"
           ;;
         3) 
             clear
-            echo "Güncellemek istediğiniz yapılacak numarasını girin."
+            echo "Enter the number of the to-do you want to update."
             read -r TODO_NUMBER_TO_UPDATE
 
             isTodoUpdated=1
@@ -98,24 +98,24 @@ do
                 if [ "$i" -eq "$((TODO_NUMBER_TO_UPDATE-1))" ]; then
                     TODO_FILE_TO_UPDATE=$(basename "$entry")
 
-                    echo "Mevcut Yapılacak isimi: ${TODO_FILE_TO_UPDATE:0:-4}"
-                    echo "Yeni isimi giriniz."
+                    echo "Current To-Do name: ${TODO_FILE_TO_UPDATE:0:-4}"
+                    echo "Enter the new name."
                     read -r NEW_TODO_NAME
 
-                    echo "Eğer son tarihi değiştirmek istiyorsanız girin (Ay/Gün/Yıl), yoksa sadece herhangi bir tuşa basın."
+                    echo "If you want to change the deadline, enter it (Month/Day/Year), otherwise just press any key."
                     read -r NEW_TODO_DEADLINE_DATE
                     
                     if [[ $(echo $NEW_TODO_DEADLINE_DATE | tr -d ' ') != "" ]]; then
                         CheckIfDateIsValid "$NEW_TODO_DEADLINE_DATE"
                         if [ $? != 0 ]; then
-                          echo -e "${RED_COLOR}HATA: Geçersiz tarih: [${NEW_TODO_DEADLINE_DATE}]; tekrar deneyin.${WHITE_COLOR}"
+                          echo -e "${RED_COLOR}ERROR: Invalid date: [${NEW_TODO_DEADLINE_DATE}]; try again.${WHITE_COLOR}"
                         else
                           echo "$NEW_TODO_DEADLINE_DATE" > "$TODO_FILE_TO_UPDATE"
                         fi
                     fi
 
                     mv "$TODO_FILE_TO_UPDATE" "$NEW_TODO_NAME.txt"
-                    echo -e "${GREEN_COLOR}Yapılacak başarıyla güncellendi!${WHITE_COLOR}"
+                    echo -e "${GREEN_COLOR}To-Do updated successfully!${WHITE_COLOR}"
                     isTodoUpdated=0
                     break
                 fi
@@ -123,12 +123,12 @@ do
             done
 
             if [ "$isTodoUpdated" -ne 0 ]; then
-              echo -e "${RED_COLOR}HATA: Yapılacak bulunamadı!${WHITE_COLOR}"
+              echo -e "${RED_COLOR}ERROR: To-Do not found!${WHITE_COLOR}"
             fi
           ;;
         4) 
             clear
-            echo "Silmek istediğiniz yapılacak numarasını girin."
+            echo "Enter the number of the to-do you want to delete."
             read -r TODO_NUMBER_TO_DELETE
 
             isTodoFound=1
@@ -138,8 +138,8 @@ do
                 if [ "$i" -eq "$((TODO_NUMBER_TO_DELETE-1))" ]; then
                     TODO_FILE_TO_DELETE=$(basename "$entry")
 
-                    echo "Silinecek Yapılacak isimi: ${TODO_FILE_TO_DELETE:0:-4}"
-                    echo "Silmek için "y", iptal için "n" tuşuna basın."
+                    echo "To-Do to be deleted: ${TODO_FILE_TO_DELETE:0:-4}"
+                    echo "Press "y" to delete, "n" to cancel."
                     read -r INPUT_YES_OR_NO
 
                     isTodoFound=0
@@ -147,13 +147,13 @@ do
                     case $(echo $INPUT_YES_OR_NO | tr -d ' ') in
                         "y")
                             rm "$TODO_FILE_TO_DELETE"
-                            echo -e "${GREEN_COLOR}Yapılacak başarıyla silindi!${WHITE_COLOR}"
+                            echo -e "${GREEN_COLOR}To-Do deleted successfully!${WHITE_COLOR}"
                             ;;
                         "n")
-                            echo "Yapılacak silinmesi iptal edildi!"
+                            echo "Deletion of the To-Do cancelled!"
                             ;;
                           *) 
-                          echo -e "${RED_COLOR}HATA: Geçersiz cevap!"
+                          echo -e "${RED_COLOR}ERROR: Invalid response!"
                           exit 1
                         ;;
                     esac
@@ -162,12 +162,12 @@ do
             done
 
             if [ "$isTodoFound" -ne 0 ]; then
-              echo -e "${RED_COLOR}HATA: Yapılacak bulunamadı!${WHITE_COLOR}"
+              echo -e "${RED_COLOR}ERROR: To-Do not found!${WHITE_COLOR}"
             fi
           ;;
         *) 
             clear
-            echo -e "${RED_COLOR}HATA: Geçersiz işlem numarası!${WHITE_COLOR}"
+            echo -e "${RED_COLOR}ERROR: Invalid operation number!${WHITE_COLOR}"
             exit 1
           ;;
     esac

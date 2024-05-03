@@ -1,7 +1,7 @@
-# Konsol üzerinden kontrol edilebilen, dosya veritabanına sahip ve CRUD işlemleri yapılabilen TO-DO uygulamasıdır.
+# This is a TO-DO application that can be controlled via the console, has a file database, and performs CRUD operations.
 
-# Çalıştırıldığı dizinde todos isimli bir klasör oluşturur ve yapılacakları yapılacak_isim.txt dosyası formatında kayıt eder.
+# It creates a folder named todos in the current directory and saves the to-dos in the format of todo_name.txt.
 
-# Her txt dosyası içinde sadece son tarih bilgisi bulunur.
+# Each txt file contains only the deadline information.
 
-#Çalıştırmak için: "bash main.sh"
+# Run Command: "bash main.sh"
